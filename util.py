@@ -1,14 +1,7 @@
 import numpy as np # type: ignore
 import cv2 # type: ignore
 
-def get_limits(color):
-    c = np.uint8([[color]])
-    hsvC = cv2.cvtColor(c, cv2.COLOR_BGR2HSV)
-
-    lowerLimit = hsvC[0][0][0] - 10, 100, 100
-    upperLimit = hsvC[0][0][0] + 10, 255, 255
-
-    lowerLimit = np.array(lowerLimit, dtype=np.uint8)
-    upperLimit = np.array(upperLimit, dtype=np.uint8)
-
-    return lowerLimit, upperLimit
+def get_limits(hsv_color, tolerance=20):
+    lower = np.array([max(hsv_color[0] - tolerance, 0), 50, 50])
+    upper = np.array([min(hsv_color[0] + tolerance, 179), 255, 255])
+    return lower, upper
