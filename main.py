@@ -12,8 +12,23 @@ while True:
     if not ret:
         break
 
+    frame = cv2.resize(frame, (640, 480))
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    hue, saturation, value = cv2.split(hsv_frame)
 
+    blank = np.zeros_like(hue)
+    
+    hue = cv2.multiply(hue, 2)  
+    
+    # Create colored visualizations
+    hue_color = cv2.merge([hue, np.ones_like(hue) * 255, np.ones_like(hue) * 255])
+    hue_color = cv2.cvtColor(hue_color, cv2.COLOR_HSV2BGR)
+    
+    saturation_color = cv2.merge([np.ones_like(saturation) * 90, saturation, np.ones_like(saturation) * 255])
+    saturation_color = cv2.cvtColor(saturation_color, cv2.COLOR_HSV2BGR)
+    
+    value_color = cv2.merge([np.zeros_like(value), np.zeros_like(value), value])
+    
     mask = cv2.inRange(hsv_frame, lower_limit, upper_limit) # mask
     res = cv2.bitwise_and(frame, frame, mask=mask) # result
     
@@ -35,11 +50,15 @@ while True:
                 x2, y2 = x1+w, y1+h
                 frame = cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-    # cv2.imshow("Frame", frame)
-    # cv2.imshow("Mask", mask)
-    # cv2.imshow("Result", res)
-    # cv2.imshow("Erosion", erosion)
-    # cv2.imshow("Dilation", dilation)
+    cv2.imshow("Frame", frame)
+    cv2.imshow("HsvFrame", hsv_frame)
+    cv2.imshow("Hue", hue_color)
+    cv2.imshow("Saturation", saturation_color)
+    cv2.imshow("Value", value_color)
+    cv2.imshow("Mask", mask)
+    cv2.imshow("Result", res)
+    cv2.imshow("Erosion", erosion)
+    cv2.imshow("Dilation", dilation)
     cv2.imshow("Opening", opening)
     cv2.imshow("Closing", closing)
 
